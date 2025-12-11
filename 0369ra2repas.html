@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Repàs Examen ASIX1 - RA2</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Babel per interpretar JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        // Icones SVG inline per no dependre de llibreries externes
+        const Icons = {
+            ChevronRight: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>,
+            ChevronLeft: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>,
+            Terminal: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>,
+            Shield: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg>,
+            Users: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
+            Network: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/></svg>,
+            FileText: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>,
+            AlertCircle: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        };
+
+        const slides = [
+            {
+                id: 1,
+                title: "Repàs Examen RA2 - ASIX1",
+                subtitle: "Implantació de Sistemes Operatius",
+                content: (
+                <div className="text-center space-y-6">
+                    <p className="text-xl text-gray-600">Preparació per a la prova pràctica i teòrica</p>
+                    <div className="grid grid-cols-2 gap-4 max-w-2xl mx-auto mt-8 text-left">
+                    <div className="p-4 bg-blue-50 rounded-lg border border-blue-200 shadow-sm">
+                        <h3 className="font-bold text-blue-800 flex items-center gap-2"><Icons.FileText/> Bloc 1: Sistema de Fitxers</h3>
+                        <p className="text-sm mt-1">Navegació, rutes i manipulació de fitxers.</p>
+                    </div>
+                    <div className="p-4 bg-green-50 rounded-lg border border-green-200 shadow-sm">
+                        <h3 className="font-bold text-green-800 flex items-center gap-2"><Icons.Users/> Bloc 2: Usuaris i Grups</h3>
+                        <p className="text-sm mt-1">Gestió local, fitxers de configuració.</p>
+                    </div>
+                    <div className="p-4 bg-purple-50 rounded-lg border border-purple-200 shadow-sm">
+                        <h3 className="font-bold text-purple-800 flex items-center gap-2"><Icons.Shield/> Bloc 3: Permisos</h3>
+                        <p className="text-sm mt-1">Propietaris, chmod, chown.</p>
+                    </div>
+                    <div className="p-4 bg-orange-50 rounded-lg border border-orange-200 shadow-sm">
+                        <h3 className="font-bold text-orange-800 flex items-center gap-2"><Icons.Network/> Bloc 4: Xarxes</h3>
+                        <p className="text-sm mt-1">Configuració IP a Windows i Ubuntu.</p>
+                    </div>
+                    </div>
+                </div>
+                )
+            },
+            {
+                id: 2,
+                title: "El Prompt i Navegació",
+                icon: <Icons.Terminal />,
+                content: (
+                <div className="space-y-6">
+                    <div className="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm shadow-lg border border-gray-700">
+                    <span className="text-blue-400">peremachine</span>@<span className="text-purple-400">pere</span>:<span className="text-yellow-400">~</span>$ pwd<br/>
+                    /home/pere
+                    </div>
+                    <ul className="list-disc pl-5 space-y-3 text-lg">
+                    <li><strong>Usuari:</strong> <code>peremachine</code></li>
+                    <li><strong>Màquina:</strong> <code>pere</code></li>
+                    <li><strong>Ubicació actual:</strong> <code>~</code> (Home de l'usuari)</li>
+                    <li><strong>Tipus d'usuari:</strong> <code>$</code> (Usuari normal) vs <code>#</code> (Root/Admin)</li>
+                    </ul>
+                    <div className="bg-yellow-50 p-4 rounded border-l-4 border-yellow-500 mt-4 shadow-sm">
+                    <p className="font-bold text-yellow-800 flex items-center gap-2"><Icons.AlertCircle/> Pregunta d'examen:</p>
+                    <p className="mt-1">Saber diferenciar <strong>Ruta Absoluta</strong> (comença per <code>/</code>) vs <strong>Ruta Relativa</strong> (des d'on soc).</p>
+                    <p className="text-sm mt-2 font-mono bg-white p-2 rounded border border-yellow-200">
+                        cd /etc/netplan (Absoluta)<br/>
+                        cd netplan (Relativa)
+                    </p>
+                    </div>
+                </div>
+                )
+            },
+            {
+                id: 3,
+                title: "Gestió de Fitxers i Directoris",
+                icon: <Icons.FileText />,
+                content: (
+                <div className="space-y-4">
+                    <table className="w-full text-left border-collapse bg-white rounded-lg shadow-sm overflow-hidden">
+                    <thead className="bg-gray-100 border-b-2 border-gray-200">
+                        <tr>
+                        <th className="p-3">Acció</th>
+                        <th className="p-3">Comanda</th>
+                        <th className="p-3">Exemple</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr className="border-b hover:bg-gray-50">
+                        <td className="p-3">Crear directori</td>
+                        <td className="p-3"><code className="bg-gray-100 px-2 py-1 rounded text-pink-600 font-bold">mkdir</code></td>
+                        <td className="p-3 text-sm font-mono text-gray-600">mkdir -p assignatures/bd</td>
+                        </tr>
+                        <tr className="border-b hover:bg-gray-50">
+                        <td className="p-3">Copiar</td>
+                        <td className="p-3"><code className="bg-gray-100 px-2 py-1 rounded text-pink-600 font-bold">cp</code></td>
+                        <td className="p-3 text-sm font-mono text-gray-600">cp horaris ../sistemes/</td>
+                        </tr>
+                        <tr className="border-b hover:bg-gray-50">
+                        <td className="p-3">Moure/Renombrar</td>
+                        <td className="p-3"><code className="bg-gray-100 px-2 py-1 rounded text-pink-600 font-bold">mv</code></td>
+                        <td className="p-3 text-sm font-mono text-gray-600">mv doc.txt nou.txt</td>
+                        </tr>
+                        <tr className="hover:bg-gray-50">
+                        <td className="p-3">Esborrar</td>
+                        <td className="p-3"><code className="bg-gray-100 px-2 py-1 rounded text-pink-600 font-bold">rm</code></td>
+                        <td className="p-3 text-sm font-mono text-gray-600">rm -r carpeta_integra</td>
+                        </tr>
+                    </tbody>
+                    </table>
+                    <div className="mt-4 p-4 bg-red-50 text-red-800 rounded border border-red-100 text-sm shadow-sm">
+                    <strong>⚠️ Atenció:</strong> A l'examen demanaran fer accions complexes en una sola línia o utilitzant rutes relatives. 
+                    <br/><em className="block mt-1">"Mou-te al directori pare i esborra la carpeta 'assignatures' sota el teu criteri."</em>
+                    </div>
+                </div>
+                )
+            },
+            {
+                id: 4,
+                title: "Usuaris: Fitxers de Configuració",
+                icon: <Icons.Users />,
+                content: (
+                <div className="space-y-6">
+                    <div>
+                    <h4 className="font-bold text-lg mb-2 text-gray-700">Interpretar /etc/passwd</h4>
+                    <div className="bg-gray-800 text-white p-4 rounded-lg font-mono text-sm overflow-x-auto shadow-md">
+                        <span className="text-green-400">severo</span>:<span className="text-red-400">x</span>:<span className="text-blue-400">1000</span>:<span className="text-purple-400">1000</span>:Professor,,,:/home/severo:/bin/bash
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3 text-sm">
+                        <div className="p-2 bg-white border rounded shadow-sm">1. <strong>severo</strong>: Nom usuari</div>
+                        <div className="p-2 bg-white border rounded shadow-sm">2. <strong>x</strong>: Password a /etc/shadow</div>
+                        <div className="p-2 bg-white border rounded shadow-sm">3. <strong>1000</strong>: UID (User ID)</div>
+                        <div className="p-2 bg-white border rounded shadow-sm">4. <strong>1000</strong>: GID (Group ID)</div>
+                        <div className="p-2 bg-white border rounded shadow-sm">5. <strong>Professor...</strong>: Comentari</div>
+                        <div className="p-2 bg-white border rounded shadow-sm">6. <strong>/home/severo</strong>: Home</div>
+                        <div className="p-2 bg-white border rounded shadow-sm">7. <strong>/bin/bash</strong>: Shell</div>
+                    </div>
+                    </div>
+                    <div className="border-t pt-4">
+                    <h4 className="font-bold text-lg mb-2 text-gray-700">Comandes Clau</h4>
+                    <div className="bg-gray-50 p-4 rounded border border-gray-200">
+                        <ul className="text-sm space-y-2 font-mono text-gray-700">
+                            <li className="flex items-center gap-2"><span className="text-green-600">❯</span> sudo useradd -m -s /bin/bash user1</li>
+                            <li className="flex items-center gap-2"><span className="text-green-600">❯</span> sudo groupadd gConvidats</li>
+                            <li className="flex items-center gap-2"><span className="text-green-600">❯</span> sudo usermod -aG gConvidats user1</li>
+                        </ul>
+                    </div>
+                    </div>
+                </div>
+                )
+            },
+            {
+                id: 5,
+                title: "Permisos i Propietaris",
+                icon: <Icons.Shield />,
+                content: (
+                <div className="space-y-5">
+                    <div className="flex justify-center items-center space-x-1 bg-white p-4 rounded-lg font-mono text-xl shadow border border-gray-200">
+                    <span className="text-blue-600 font-bold bg-blue-50 px-1 rounded" title="Tipus">d</span>
+                    <span className="text-green-600 font-bold bg-green-50 px-1 rounded" title="Propietari">rwx</span>
+                    <span className="text-orange-600 font-bold bg-orange-50 px-1 rounded" title="Grup">r-x</span>
+                    <span className="text-red-600 font-bold bg-red-50 px-1 rounded" title="Altres">---</span>
+                    </div>
+                    <div className="grid grid-cols-4 gap-2 text-center text-xs font-bold uppercase tracking-wider text-gray-500">
+                    <div>Tipus</div>
+                    <div className="text-green-700">Propietari</div>
+                    <div className="text-orange-700">Grup</div>
+                    <div className="text-red-700">Altres</div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                    <div className="p-4 border bg-white rounded-lg shadow-sm">
+                        <h4 className="font-bold mb-2 text-gray-800 border-b pb-2">Mode Numèric (Octal)</h4>
+                        <ul className="text-sm space-y-1">
+                        <li className="flex justify-between"><span><strong>r</strong> (read)</span> <span className="font-mono bg-gray-100 px-1 rounded">4</span></li>
+                        <li className="flex justify-between"><span><strong>w</strong> (write)</span> <span className="font-mono bg-gray-100 px-1 rounded">2</span></li>
+                        <li className="flex justify-between"><span><strong>x</strong> (execute)</span> <span className="font-mono bg-gray-100 px-1 rounded">1</span></li>
+                        </ul>
+                        <p className="mt-3 font-mono text-sm bg-gray-100 p-2 rounded text-center text-indigo-600 font-bold">chmod 750 carpeta</p>
+                    </div>
+                    <div className="p-4 border bg-white rounded-lg shadow-sm">
+                        <h4 className="font-bold mb-2 text-gray-800 border-b pb-2">Canvi de Propietari</h4>
+                        <p className="text-sm mb-2 text-gray-600">Canviar usuari i grup:</p>
+                        <p className="font-mono text-sm bg-gray-100 p-2 rounded text-center text-indigo-600 font-bold">chown user1:grup1 arxiu</p>
+                        <p className="text-xs mt-3 text-gray-400 italic text-center">Només el propietari o root pot fer-ho.</p>
+                    </div>
+                    </div>
+                </div>
+                )
+            },
+            {
+                id: 6,
+                title: "Configuració de Xarxa",
+                icon: <Icons.Network />,
+                content: (
+                <div className="space-y-6">
+                    <div className="bg-white p-4 rounded-lg shadow-sm border border-orange-100">
+                    <h3 className="font-bold text-lg flex items-center gap-2 text-gray-800">
+                        <span className="text-orange-500">●</span> Ubuntu (Netplan)
+                    </h3>
+                    <p className="text-xs text-gray-500 mb-2 font-mono">/etc/netplan/00-installer-config.yaml</p>
+                    <pre className="bg-gray-800 text-blue-300 p-4 rounded text-xs font-mono overflow-x-auto leading-relaxed">
+{`network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    enp0s3:
+      dhcp4: no
+      addresses: [192.168.1.50/24]
+      gateway4: 192.168.1.1`}
+                    </pre>
+                    <p className="text-xs mt-2 text-gray-600 flex items-center gap-1"><Icons.Terminal className="w-3 h-3"/> Recorda: <code className="bg-gray-200 px-1 rounded">sudo netplan apply</code></p>
+                    </div>
+
+                    <div className="bg-white p-4 rounded-lg shadow-sm border border-blue-100">
+                    <h3 className="font-bold text-lg flex items-center gap-2 text-gray-800">
+                        <span className="text-blue-500">●</span> Windows (PowerShell)
+                    </h3>
+                    <div className="bg-gray-100 p-3 rounded text-xs font-mono border-l-4 border-blue-500 text-gray-700 mt-2 break-all">
+                        New-NetIPAddress -InterfaceIndex 6 -IPAddress 192.168.1.55 -PrefixLength 24 -DefaultGateway 192.168.1.1
+                    </div>
+                    <p className="text-xs mt-2 text-gray-600">Veure interfícies: <code className="bg-gray-200 px-1 rounded">Get-NetIPInterface</code></p>
+                    </div>
+                </div>
+                )
+            },
+            {
+                id: 7,
+                title: "Consells per l'Examen",
+                icon: <Icons.AlertCircle />,
+                content: (
+                <div className="space-y-4">
+                    <div className="bg-white p-6 rounded-lg shadow border-t-4 border-green-500">
+                    <h3 className="font-bold text-lg mb-4 text-gray-800">Checklist Final</h3>
+                    <ul className="space-y-3 text-gray-700">
+                        <li className="flex items-start gap-3">
+                        <div className="mt-1 bg-green-100 text-green-600 rounded-full p-1"><svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"/></svg></div>
+                        <span>Llegeix bé si demana <strong>ruta absoluta</strong> (des de /) o <strong>relativa</strong>.</span>
+                        </li>
+                        <li className="flex items-start gap-3">
+                        <div className="mt-1 bg-green-100 text-green-600 rounded-full p-1"><svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"/></svg></div>
+                        <span>Si has de crear una estructura d'arbre, usa <code>mkdir -p</code>.</span>
+                        </li>
+                        <li className="flex items-start gap-3">
+                        <div className="mt-1 bg-green-100 text-green-600 rounded-full p-1"><svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"/></svg></div>
+                        <span>A Windows, recorda desactivar el <strong>Firewall</strong> si el ping no respon.</span>
+                        </li>
+                        <li className="flex items-start gap-3">
+                        <div className="mt-1 bg-green-100 text-green-600 rounded-full p-1"><svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"/></svg></div>
+                        <span>A les captures: el <strong>prompt</strong> ha de demostrar qui ets.</span>
+                        </li>
+                    </ul>
+                    </div>
+                    <p className="text-center font-bold text-2xl text-blue-800 mt-6 animate-pulse">Molta sort! 🍀</p>
+                </div>
+                )
+            }
+        ];
+
+        function App() {
+            const [currentSlide, setCurrentSlide] = useState(0);
+
+            const nextSlide = () => {
+                if (currentSlide < slides.length - 1) setCurrentSlide(curr => curr + 1);
+            };
+
+            const prevSlide = () => {
+                if (currentSlide > 0) setCurrentSlide(curr => curr - 1);
+            };
+
+            return (
+                <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
+                    <div className="w-full max-w-4xl bg-white rounded-2xl shadow-xl overflow-hidden min-h-[600px] flex flex-col">
+                        
+                        {/* Header */}
+                        <div className="bg-blue-900 text-white p-6 flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                {slides[currentSlide].icon && <div className="p-2 bg-blue-800 rounded-lg text-white fill-current w-10 h-10 flex items-center justify-center">{slides[currentSlide].icon}</div>}
+                                <div>
+                                    <h1 className="text-2xl font-bold">{slides[currentSlide].title}</h1>
+                                    {slides[currentSlide].subtitle && <p className="text-blue-200 text-sm">{slides[currentSlide].subtitle}</p>}
+                                </div>
+                            </div>
+                            <div className="text-sm font-mono bg-blue-800 px-3 py-1 rounded-full">
+                                {currentSlide + 1} / {slides.length}
+                            </div>
+                        </div>
+
+                        {/* Content Body */}
+                        <div className="flex-1 p-8 text-gray-800 flex flex-col justify-center bg-slate-50">
+                            {slides[currentSlide].content}
+                        </div>
+
+                        {/* Footer / Controls */}
+                        <div className="bg-white p-4 border-t flex justify-between items-center">
+                            <button 
+                                onClick={prevSlide}
+                                disabled={currentSlide === 0}
+                                className={`flex items-center px-6 py-3 rounded-lg font-bold transition-all ${
+                                currentSlide === 0 
+                                    ? 'text-gray-300 cursor-not-allowed' 
+                                    : 'bg-white text-blue-900 hover:bg-blue-50 border border-blue-200 shadow-sm hover:shadow'
+                                }`}
+                            >
+                                <div className="mr-2"><Icons.ChevronLeft /></div> Anterior
+                            </button>
+
+                            <div className="flex gap-2">
+                                {slides.map((_, idx) => (
+                                <div 
+                                    key={idx}
+                                    onClick={() => setCurrentSlide(idx)}
+                                    className={`w-3 h-3 rounded-full cursor-pointer transition-all ${
+                                    idx === currentSlide ? 'bg-blue-600 w-8' : 'bg-gray-300 hover:bg-gray-400'
+                                    }`}
+                                />
+                                ))}
+                            </div>
+
+                            <button 
+                                onClick={nextSlide}
+                                disabled={currentSlide === slides.length - 1}
+                                className={`flex items-center px-6 py-3 rounded-lg font-bold transition-all ${
+                                currentSlide === slides.length - 1 
+                                    ? 'text-gray-300 cursor-not-allowed' 
+                                    : 'bg-blue-600 text-white hover:bg-blue-700 shadow-md hover:shadow-lg'
+                                }`}
+                            >
+                                Següent <div className="ml-2"><Icons.ChevronRight /></div>
+                            </button>
+                        </div>
+                    </div>
+                    <div className="mt-4 text-gray-400 text-xs text-center">
+                        Generat per a ASIX1 - Mòdul Implantació Sistemes Operatius
+                    </div>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
