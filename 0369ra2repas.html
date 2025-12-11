@@ -3,275 +3,449 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Repàs Examen ASIX1 - RA2</title>
-    <!-- Tailwind CSS -->
+    <title>Repàs Examen RA2 - Complet</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- React & ReactDOM -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <!-- Babel per interpretar JSX -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { font-family: 'Inter', sans-serif; }
+        code { font-family: 'JetBrains Mono', monospace; }
+        /* Custom Blue color class for utility */
+        .bg-custom-blue { background-color: #557CD7; }
+        .text-custom-blue { color: #557CD7; }
+        .border-custom-blue { border-color: #557CD7; }
+        .hover-bg-custom-blue:hover { background-color: #4a6ec2; }
     </style>
 </head>
-<body class="bg-gray-100 text-gray-800">
-    <div id="root"></div>
+<body class="bg-gray-50 text-gray-800 h-screen overflow-hidden flex flex-col justify-center items-center">
+    <div id="root" class="w-full max-w-6xl h-full p-4 flex flex-col justify-center"></div>
 
     <script type="text/babel">
-        const { useState } = React;
+        const { useState, useEffect } = React;
 
-        // Icones SVG inline per no dependre de llibreries externes
+        // Icones SVG
         const Icons = {
-            ChevronRight: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>,
-            ChevronLeft: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>,
-            Terminal: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>,
-            Shield: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg>,
-            Users: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
-            Network: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/></svg>,
-            FileText: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>,
-            AlertCircle: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            ArrowRight: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>,
+            ArrowLeft: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>,
+            Terminal: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>,
+            Folder: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>,
+            User: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>,
+            Lock: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>,
+            Network: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
         };
 
         const slides = [
             {
-                id: 1,
-                title: "Repàs Examen RA2 - ASIX1",
+                title: "Repàs Intensiu RA2",
                 subtitle: "Implantació de Sistemes Operatius",
                 content: (
-                <div className="text-center space-y-6">
-                    <p className="text-xl text-gray-600">Preparació per a la prova pràctica i teòrica</p>
-                    <div className="grid grid-cols-2 gap-4 max-w-2xl mx-auto mt-8 text-left">
-                    <div className="p-4 bg-blue-50 rounded-lg border border-blue-200 shadow-sm">
-                        <h3 className="font-bold text-blue-800 flex items-center gap-2"><Icons.FileText/> Bloc 1: Sistema de Fitxers</h3>
-                        <p className="text-sm mt-1">Navegació, rutes i manipulació de fitxers.</p>
+                    <div className="text-center space-y-8">
+                        <p className="text-lg text-gray-600 max-w-2xl mx-auto">Conceptes clau per dominar la prova pràctica i teòrica.</p>
+                        <div className="grid grid-cols-2 gap-6 max-w-4xl mx-auto">
+                            <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all group">
+                                <div className="text-custom-blue mb-4 flex justify-center"><Icons.Folder/></div>
+                                <h3 className="text-xl font-bold text-gray-800 mb-2">Directoris i Rutes</h3>
+                                <p className="text-gray-500 text-sm">Absolutes vs Relatives, navegació i gestió.</p>
+                            </div>
+                            <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all group">
+                                <div className="text-green-600 mb-4 flex justify-center"><Icons.User/></div>
+                                <h3 className="text-xl font-bold text-gray-800 mb-2">Usuaris i Grups</h3>
+                                <p className="text-gray-500 text-sm">/etc/passwd, shadow, groups i comandes.</p>
+                            </div>
+                            <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all group">
+                                <div className="text-purple-600 mb-4 flex justify-center"><Icons.Lock/></div>
+                                <h3 className="text-xl font-bold text-gray-800 mb-2">Permisos Avançats</h3>
+                                <p className="text-gray-500 text-sm">Octal, Simbòlic i canvi de propietaris.</p>
+                            </div>
+                            <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all group">
+                                <div className="text-orange-500 mb-4 flex justify-center"><Icons.Network/></div>
+                                <h3 className="text-xl font-bold text-gray-800 mb-2">Xarxes</h3>
+                                <p className="text-gray-500 text-sm">Configuració IP i diagnòstic a Linux/Windows.</p>
+                            </div>
+                        </div>
                     </div>
-                    <div className="p-4 bg-green-50 rounded-lg border border-green-200 shadow-sm">
-                        <h3 className="font-bold text-green-800 flex items-center gap-2"><Icons.Users/> Bloc 2: Usuaris i Grups</h3>
-                        <p className="text-sm mt-1">Gestió local, fitxers de configuració.</p>
-                    </div>
-                    <div className="p-4 bg-purple-50 rounded-lg border border-purple-200 shadow-sm">
-                        <h3 className="font-bold text-purple-800 flex items-center gap-2"><Icons.Shield/> Bloc 3: Permisos</h3>
-                        <p className="text-sm mt-1">Propietaris, chmod, chown.</p>
-                    </div>
-                    <div className="p-4 bg-orange-50 rounded-lg border border-orange-200 shadow-sm">
-                        <h3 className="font-bold text-orange-800 flex items-center gap-2"><Icons.Network/> Bloc 4: Xarxes</h3>
-                        <p className="text-sm mt-1">Configuració IP a Windows i Ubuntu.</p>
-                    </div>
-                    </div>
-                </div>
                 )
             },
             {
-                id: 2,
-                title: "El Prompt i Navegació",
+                title: "1. Rutes: Absolutes vs Relatives",
+                icon: <Icons.Folder />,
+                content: (
+                    <div className="space-y-6">
+                        <div className="grid grid-cols-2 gap-8">
+                            <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                                <h3 className="text-green-600 font-bold text-lg mb-2 flex items-center gap-2">Ruta Absoluta</h3>
+                                <ul className="text-sm space-y-2 text-gray-600">
+                                    <li>• Sempre comença per <code>/</code> (arrel).</li>
+                                    <li>• Funciona independentment d'on estiguis.</li>
+                                    <li>• És com l'adreça completa de casa teva.</li>
+                                </ul>
+                                <div className="mt-4 bg-gray-800 p-3 rounded text-sm font-mono text-green-300">
+                                    cd /home/alumne/Documents
+                                </div>
+                            </div>
+                            <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                                <h3 className="text-yellow-600 font-bold text-lg mb-2 flex items-center gap-2">Ruta Relativa</h3>
+                                <ul className="text-sm space-y-2 text-gray-600">
+                                    <li>• MAI comença per <code>/</code>.</li>
+                                    <li>• Depèn d'on et trobis (<code>pwd</code>).</li>
+                                    <li>• <code>.</code> (aquí), <code>..</code> (pare).</li>
+                                </ul>
+                                <div className="mt-4 bg-gray-800 p-3 rounded text-sm font-mono text-yellow-300">
+                                    cd Documents/apunts<br/>
+                                    cd ../..
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="bg-blue-50 p-6 rounded-xl border border-blue-100">
+                            <h4 className="font-bold text-gray-800 mb-4">Exercici Ràpid: Estàs a <code>/home/alumne</code></h4>
+                            <div className="grid grid-cols-1 gap-3 text-sm">
+                                <div className="flex justify-between items-center bg-white p-3 rounded shadow-sm">
+                                    <span className="text-gray-700">Vols anar a <code>/etc/netplan</code> usant ruta <strong>Absoluta</strong>:</span>
+                                    <code className="text-green-600 font-bold bg-green-50 px-2 rounded">cd /etc/netplan</code>
+                                </div>
+                                <div className="flex justify-between items-center bg-white p-3 rounded shadow-sm">
+                                    <span className="text-gray-700">Vols anar a <code>/home/alumne/Descàrregues</code> usant ruta <strong>Relativa</strong>:</span>
+                                    <code className="text-yellow-600 font-bold bg-yellow-50 px-2 rounded">cd Descàrregues</code>
+                                </div>
+                                <div className="flex justify-between items-center bg-white p-3 rounded shadow-sm">
+                                    <span className="text-gray-700">Vols anar al directori pare (<code>/home</code>):</span>
+                                    <code className="text-custom-blue font-bold bg-blue-50 px-2 rounded">cd ..</code>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )
+            },
+            {
+                title: "Practica de Gestió de Fitxers",
                 icon: <Icons.Terminal />,
                 content: (
-                <div className="space-y-6">
-                    <div className="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm shadow-lg border border-gray-700">
-                    <span className="text-blue-400">peremachine</span>@<span className="text-purple-400">pere</span>:<span className="text-yellow-400">~</span>$ pwd<br/>
-                    /home/pere
+                    <div className="space-y-6">
+                        <div className="bg-white text-gray-800 p-8 rounded-xl shadow-md border border-gray-200">
+                            <h3 className="font-bold text-xl mb-6 text-purple-700">Reptes de Comandes</h3>
+                            <div className="space-y-6">
+                                <div className="border-b border-gray-100 pb-4">
+                                    <p className="font-semibold text-gray-700 mb-2">1. Crear estructura de carpetes niada (Ex: examen/ra2/xarxes)</p>
+                                    <div className="flex justify-between items-center bg-gray-50 p-3 rounded">
+                                        <span className="text-sm text-gray-500 italic">No facis `mkdir` tres vegades...</span>
+                                        <code className="bg-gray-800 text-green-300 px-3 py-1 rounded text-sm shadow-sm">mkdir -p examen/ra2/xarxes</code>
+                                    </div>
+                                </div>
+                                <div className="border-b border-gray-100 pb-4">
+                                    <p className="font-semibold text-gray-700 mb-2">2. Moure i canviar nom alhora</p>
+                                    <div className="flex justify-between items-center bg-gray-50 p-3 rounded">
+                                        <span className="text-sm text-gray-500 italic">Mou 'fitxer.txt' a 'Docs' i digues-li 'final.txt'</span>
+                                        <code className="bg-gray-800 text-yellow-300 px-3 py-1 rounded text-sm shadow-sm">mv fitxer.txt Docs/final.txt</code>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p className="font-semibold text-gray-700 mb-2">3. Esborrar carpeta amb contingut</p>
+                                    <div className="flex justify-between items-center bg-gray-50 p-3 rounded">
+                                        <span className="text-sm text-gray-500 italic">Compte! `rmdir` només esborra carpetes buides.</span>
+                                        <code className="bg-gray-800 text-red-300 px-3 py-1 rounded text-sm shadow-sm">rm -r carpeta_plena</code>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 text-sm text-blue-800 flex items-center gap-3 shadow-sm">
+                            <div className="bg-white p-2 rounded-full shadow-sm text-custom-blue"><Icons.Terminal/></div>
+                            <span><strong>Truc d'examen:</strong> Si et demanen llistar fitxers ocults, recorda <code>-a</code>. Si vols veure permisos, <code>-l</code>. Combina'ls: <code>ls -la</code>.</span>
+                        </div>
                     </div>
-                    <ul className="list-disc pl-5 space-y-3 text-lg">
-                    <li><strong>Usuari:</strong> <code>peremachine</code></li>
-                    <li><strong>Màquina:</strong> <code>pere</code></li>
-                    <li><strong>Ubicació actual:</strong> <code>~</code> (Home de l'usuari)</li>
-                    <li><strong>Tipus d'usuari:</strong> <code>$</code> (Usuari normal) vs <code>#</code> (Root/Admin)</li>
-                    </ul>
-                    <div className="bg-yellow-50 p-4 rounded border-l-4 border-yellow-500 mt-4 shadow-sm">
-                    <p className="font-bold text-yellow-800 flex items-center gap-2"><Icons.AlertCircle/> Pregunta d'examen:</p>
-                    <p className="mt-1">Saber diferenciar <strong>Ruta Absoluta</strong> (comença per <code>/</code>) vs <strong>Ruta Relativa</strong> (des d'on soc).</p>
-                    <p className="text-sm mt-2 font-mono bg-white p-2 rounded border border-yellow-200">
-                        cd /etc/netplan (Absoluta)<br/>
-                        cd netplan (Relativa)
-                    </p>
-                    </div>
-                </div>
                 )
             },
             {
-                id: 3,
-                title: "Gestió de Fitxers i Directoris",
-                icon: <Icons.FileText />,
+                title: "2. Usuaris: Fitxers Essencials",
+                icon: <Icons.User />,
                 content: (
-                <div className="space-y-4">
-                    <table className="w-full text-left border-collapse bg-white rounded-lg shadow-sm overflow-hidden">
-                    <thead className="bg-gray-100 border-b-2 border-gray-200">
-                        <tr>
-                        <th className="p-3">Acció</th>
-                        <th className="p-3">Comanda</th>
-                        <th className="p-3">Exemple</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr className="border-b hover:bg-gray-50">
-                        <td className="p-3">Crear directori</td>
-                        <td className="p-3"><code className="bg-gray-100 px-2 py-1 rounded text-pink-600 font-bold">mkdir</code></td>
-                        <td className="p-3 text-sm font-mono text-gray-600">mkdir -p assignatures/bd</td>
-                        </tr>
-                        <tr className="border-b hover:bg-gray-50">
-                        <td className="p-3">Copiar</td>
-                        <td className="p-3"><code className="bg-gray-100 px-2 py-1 rounded text-pink-600 font-bold">cp</code></td>
-                        <td className="p-3 text-sm font-mono text-gray-600">cp horaris ../sistemes/</td>
-                        </tr>
-                        <tr className="border-b hover:bg-gray-50">
-                        <td className="p-3">Moure/Renombrar</td>
-                        <td className="p-3"><code className="bg-gray-100 px-2 py-1 rounded text-pink-600 font-bold">mv</code></td>
-                        <td className="p-3 text-sm font-mono text-gray-600">mv doc.txt nou.txt</td>
-                        </tr>
-                        <tr className="hover:bg-gray-50">
-                        <td className="p-3">Esborrar</td>
-                        <td className="p-3"><code className="bg-gray-100 px-2 py-1 rounded text-pink-600 font-bold">rm</code></td>
-                        <td className="p-3 text-sm font-mono text-gray-600">rm -r carpeta_integra</td>
-                        </tr>
-                    </tbody>
-                    </table>
-                    <div className="mt-4 p-4 bg-red-50 text-red-800 rounded border border-red-100 text-sm shadow-sm">
-                    <strong>⚠️ Atenció:</strong> A l'examen demanaran fer accions complexes en una sola línia o utilitzant rutes relatives. 
-                    <br/><em className="block mt-1">"Mou-te al directori pare i esborra la carpeta 'assignatures' sota el teu criteri."</em>
-                    </div>
-                </div>
-                )
-            },
-            {
-                id: 4,
-                title: "Usuaris: Fitxers de Configuració",
-                icon: <Icons.Users />,
-                content: (
-                <div className="space-y-6">
-                    <div>
-                    <h4 className="font-bold text-lg mb-2 text-gray-700">Interpretar /etc/passwd</h4>
-                    <div className="bg-gray-800 text-white p-4 rounded-lg font-mono text-sm overflow-x-auto shadow-md">
-                        <span className="text-green-400">severo</span>:<span className="text-red-400">x</span>:<span className="text-blue-400">1000</span>:<span className="text-purple-400">1000</span>:Professor,,,:/home/severo:/bin/bash
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3 text-sm">
-                        <div className="p-2 bg-white border rounded shadow-sm">1. <strong>severo</strong>: Nom usuari</div>
-                        <div className="p-2 bg-white border rounded shadow-sm">2. <strong>x</strong>: Password a /etc/shadow</div>
-                        <div className="p-2 bg-white border rounded shadow-sm">3. <strong>1000</strong>: UID (User ID)</div>
-                        <div className="p-2 bg-white border rounded shadow-sm">4. <strong>1000</strong>: GID (Group ID)</div>
-                        <div className="p-2 bg-white border rounded shadow-sm">5. <strong>Professor...</strong>: Comentari</div>
-                        <div className="p-2 bg-white border rounded shadow-sm">6. <strong>/home/severo</strong>: Home</div>
-                        <div className="p-2 bg-white border rounded shadow-sm">7. <strong>/bin/bash</strong>: Shell</div>
-                    </div>
-                    </div>
-                    <div className="border-t pt-4">
-                    <h4 className="font-bold text-lg mb-2 text-gray-700">Comandes Clau</h4>
-                    <div className="bg-gray-50 p-4 rounded border border-gray-200">
-                        <ul className="text-sm space-y-2 font-mono text-gray-700">
-                            <li className="flex items-center gap-2"><span className="text-green-600">❯</span> sudo useradd -m -s /bin/bash user1</li>
-                            <li className="flex items-center gap-2"><span className="text-green-600">❯</span> sudo groupadd gConvidats</li>
-                            <li className="flex items-center gap-2"><span className="text-green-600">❯</span> sudo usermod -aG gConvidats user1</li>
-                        </ul>
-                    </div>
-                    </div>
-                </div>
-                )
-            },
-            {
-                id: 5,
-                title: "Permisos i Propietaris",
-                icon: <Icons.Shield />,
-                content: (
-                <div className="space-y-5">
-                    <div className="flex justify-center items-center space-x-1 bg-white p-4 rounded-lg font-mono text-xl shadow border border-gray-200">
-                    <span className="text-blue-600 font-bold bg-blue-50 px-1 rounded" title="Tipus">d</span>
-                    <span className="text-green-600 font-bold bg-green-50 px-1 rounded" title="Propietari">rwx</span>
-                    <span className="text-orange-600 font-bold bg-orange-50 px-1 rounded" title="Grup">r-x</span>
-                    <span className="text-red-600 font-bold bg-red-50 px-1 rounded" title="Altres">---</span>
-                    </div>
-                    <div className="grid grid-cols-4 gap-2 text-center text-xs font-bold uppercase tracking-wider text-gray-500">
-                    <div>Tipus</div>
-                    <div className="text-green-700">Propietari</div>
-                    <div className="text-orange-700">Grup</div>
-                    <div className="text-red-700">Altres</div>
-                    </div>
+                    <div className="space-y-4">
+                        <div className="grid grid-cols-1 gap-4">
+                            {/* Passwd */}
+                            <div className="bg-white p-5 rounded-lg border-l-4 border-green-500 shadow-sm">
+                                <div className="flex justify-between mb-3">
+                                    <h4 className="font-bold text-gray-800 text-lg">/etc/passwd</h4>
+                                    <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded font-bold">Llegible per tothom (644)</span>
+                                </div>
+                                <code className="text-sm bg-gray-800 text-green-300 block p-3 rounded mb-2">usuari:x:1000:1000:Comentari:/home:/shell</code>
+                                <p className="text-xs text-gray-500">Conté informació bàsica. La 'x' indica que el password està a shadow.</p>
+                            </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                    <div className="p-4 border bg-white rounded-lg shadow-sm">
-                        <h4 className="font-bold mb-2 text-gray-800 border-b pb-2">Mode Numèric (Octal)</h4>
-                        <ul className="text-sm space-y-1">
-                        <li className="flex justify-between"><span><strong>r</strong> (read)</span> <span className="font-mono bg-gray-100 px-1 rounded">4</span></li>
-                        <li className="flex justify-between"><span><strong>w</strong> (write)</span> <span className="font-mono bg-gray-100 px-1 rounded">2</span></li>
-                        <li className="flex justify-between"><span><strong>x</strong> (execute)</span> <span className="font-mono bg-gray-100 px-1 rounded">1</span></li>
-                        </ul>
-                        <p className="mt-3 font-mono text-sm bg-gray-100 p-2 rounded text-center text-indigo-600 font-bold">chmod 750 carpeta</p>
+                            {/* Shadow */}
+                            <div className="bg-white p-5 rounded-lg border-l-4 border-red-500 shadow-sm">
+                                <div className="flex justify-between mb-3">
+                                    <h4 className="font-bold text-gray-800 text-lg">/etc/shadow</h4>
+                                    <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded font-bold">Només root (600)</span>
+                                </div>
+                                <code className="text-sm bg-gray-800 text-red-300 block p-3 rounded mb-2">usuari:$y$j9T$hash...:19000:0:99999:7:::</code>
+                                <p className="text-xs text-gray-500">Conté el hash de la contrasenya i la política de caducitat (dies mínim, màxim, avís...).</p>
+                            </div>
+
+                            {/* Group */}
+                            <div className="bg-white p-5 rounded-lg border-l-4 border-custom-blue shadow-sm">
+                                <div className="flex justify-between mb-3">
+                                    <h4 className="font-bold text-gray-800 text-lg">/etc/group</h4>
+                                    <span className="text-xs bg-blue-100 text-custom-blue px-2 py-1 rounded font-bold">Definició de grups</span>
+                                </div>
+                                <code className="text-sm bg-gray-800 text-blue-300 block p-3 rounded mb-2">sudo:x:27:usuari1,usuari2</code>
+                                <p className="text-xs text-gray-500">Format: <code>NomGrup:x:GID:Membres</code>. Aquí veus qui pertany al grup.</p>
+                            </div>
+                        </div>
                     </div>
-                    <div className="p-4 border bg-white rounded-lg shadow-sm">
-                        <h4 className="font-bold mb-2 text-gray-800 border-b pb-2">Canvi de Propietari</h4>
-                        <p className="text-sm mb-2 text-gray-600">Canviar usuari i grup:</p>
-                        <p className="font-mono text-sm bg-gray-100 p-2 rounded text-center text-indigo-600 font-bold">chown user1:grup1 arxiu</p>
-                        <p className="text-xs mt-3 text-gray-400 italic text-center">Només el propietari o root pot fer-ho.</p>
-                    </div>
-                    </div>
-                </div>
                 )
             },
             {
-                id: 6,
-                title: "Configuració de Xarxa",
+                title: "Gestió d'Usuaris i Grups",
+                icon: <Icons.User />,
+                content: (
+                    <div className="space-y-6">
+                        <div className="grid grid-cols-2 gap-6">
+                            <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                                <h3 className="text-lg font-bold text-green-600 mb-4 border-b pb-2">Creació</h3>
+                                <div className="space-y-4">
+                                    <div>
+                                        <p className="text-gray-500 text-xs mb-1 font-semibold uppercase">Crear usuari amb home i shell:</p>
+                                        <div className="bg-gray-100 p-2 rounded border border-gray-200">
+                                            <code className="text-gray-800 text-sm">sudo useradd -m -s /bin/bash <span className="text-green-600 font-bold">pere</span></code>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <p className="text-gray-500 text-xs mb-1 font-semibold uppercase">Assignar contrasenya:</p>
+                                        <div className="bg-gray-100 p-2 rounded border border-gray-200">
+                                            <code className="text-gray-800 text-sm">sudo passwd <span className="text-green-600 font-bold">pere</span></code>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <p className="text-gray-500 text-xs mb-1 font-semibold uppercase">Crear grup nou:</p>
+                                        <div className="bg-gray-100 p-2 rounded border border-gray-200">
+                                            <code className="text-gray-800 text-sm">sudo groupadd <span className="text-custom-blue font-bold">sistemes</span></code>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                                <h3 className="text-lg font-bold text-custom-blue mb-4 border-b pb-2">Modificació i Grups</h3>
+                                <div className="space-y-4">
+                                    <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                                        <p className="text-gray-600 text-xs mb-2 font-bold uppercase flex items-center gap-2">
+                                            <span className="w-2 h-2 rounded-full bg-red-500 inline-block"></span> Afegir a grup secundari:
+                                        </p>
+                                        <code className="text-gray-800 text-sm block mb-2 bg-white p-2 rounded border border-blue-200">
+                                            sudo usermod <span className="text-red-500 font-bold">-aG</span> <span className="text-custom-blue font-bold">sistemes</span> <span className="text-green-600 font-bold">pere</span>
+                                        </code>
+                                        <p className="text-xs text-orange-600 mt-1 font-semibold">⚠️ No oblidis el -a (append), o esborraràs els altres grups!</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-gray-500 text-xs mb-1 font-semibold uppercase">Veure grups d'un usuari:</p>
+                                        <div className="bg-gray-100 p-2 rounded border border-gray-200">
+                                            <code className="text-gray-800 text-sm">groups <span className="text-green-600 font-bold">pere</span></code>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )
+            },
+            {
+                title: "3. Permisos: Octal i Simbòlic",
+                icon: <Icons.Lock />,
+                content: (
+                    <div className="space-y-6">
+                        {/* Visual Permission Bar */}
+                        <div className="flex flex-col items-center justify-center bg-white p-4 rounded-xl shadow-sm border border-gray-200 mb-4">
+                            <div className="flex items-center space-x-2 text-2xl font-mono mb-2">
+                                <span className="text-blue-500 font-bold bg-blue-50 px-2 py-1 rounded border border-blue-100">d</span>
+                                <span className="text-green-600 font-bold bg-green-50 px-2 py-1 rounded border border-green-100">rwx</span>
+                                <span className="text-orange-500 font-bold bg-orange-50 px-2 py-1 rounded border border-orange-100">r-x</span>
+                                <span className="text-red-500 font-bold bg-red-50 px-2 py-1 rounded border border-red-100">---</span>
+                            </div>
+                            <div className="flex gap-4 text-[10px] font-bold uppercase tracking-widest text-gray-400 w-full justify-center">
+                                <div className="w-12 text-center border-t-2 border-blue-200 pt-1 mt-1">Tipus</div>
+                                <div className="w-16 text-center border-t-2 border-green-200 pt-1 mt-1 text-green-600">Propietari</div>
+                                <div className="w-16 text-center border-t-2 border-orange-200 pt-1 mt-1 text-orange-500">Grup</div>
+                                <div className="w-16 text-center border-t-2 border-red-200 pt-1 mt-1 text-red-500">Altres</div>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-6">
+                            <div className="bg-white text-gray-800 p-6 rounded-xl border border-gray-200 shadow-sm">
+                                <h4 className="font-bold text-purple-700 mb-3 flex items-center gap-2">Mode Octal (Numèric)</h4>
+                                <p className="text-sm text-gray-500 mb-4">Suma els valors per: <br/><strong>User</strong>, <strong>Group</strong>, <strong>Others</strong>.</p>
+                                <div className="bg-gray-100 p-3 rounded text-center font-mono text-sm border border-gray-300 text-purple-800 font-bold">
+                                    chmod 750 arxiu
+                                </div>
+                                <ul className="text-xs mt-3 text-gray-500 space-y-1 font-mono">
+                                    <li>7 (4+2+1) = rwx (Propietari)</li>
+                                    <li>5 (4+0+1) = r-x (Grup)</li>
+                                    <li>0 (0+0+0) = --- (Altres)</li>
+                                </ul>
+                            </div>
+
+                            <div className="bg-white text-gray-800 p-6 rounded-xl border border-gray-200 shadow-sm">
+                                <h4 className="font-bold text-custom-blue mb-3 flex items-center gap-2">Mode Simbòlic</h4>
+                                <p className="text-sm text-gray-500 mb-4">Target (u,g,o,a) + Acció (+,-,=) + Permís.</p>
+                                <div className="space-y-3">
+                                    <div className="flex justify-between items-center bg-gray-50 p-2 rounded border border-gray-100">
+                                        <code className="text-gray-800 font-bold text-xs">chmod u+x script</code>
+                                        <span className="text-xs text-gray-400">Afegir exec. prop</span>
+                                    </div>
+                                    <div className="flex justify-between items-center bg-gray-50 p-2 rounded border border-gray-100">
+                                        <code className="text-gray-800 font-bold text-xs">chmod g-w doc</code>
+                                        <span className="text-xs text-gray-400">Treure escript. grup</span>
+                                    </div>
+                                    <div className="flex justify-between items-center bg-gray-50 p-2 rounded border border-gray-100">
+                                        <code className="text-gray-800 font-bold text-xs">chmod o=r pub</code>
+                                        <span className="text-xs text-gray-400">Altres només lect.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )
+            },
+            {
+                title: "Canvi de Propietaris (chown)",
+                icon: <Icons.Lock />,
+                content: (
+                    <div className="space-y-6">
+                        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                            <div className="flex items-center justify-between mb-4">
+                                <h3 className="text-xl font-bold text-gray-800">La comanda <code>chown</code></h3>
+                                <span className="bg-red-100 text-red-600 text-xs px-2 py-1 rounded font-bold">Només Root</span>
+                            </div>
+                            
+                            <table className="w-full text-sm text-left">
+                                <thead className="text-xs text-gray-500 uppercase bg-gray-50">
+                                    <tr>
+                                        <th className="px-4 py-3 rounded-l-lg">Sintaxi</th>
+                                        <th className="px-4 py-3 rounded-r-lg">Efecte</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-gray-100">
+                                    <tr>
+                                        <td className="px-4 py-3 font-mono text-green-600 font-bold">chown pere arxiu</td>
+                                        <td className="px-4 py-3 text-gray-600">Canvia només l'usuari propietari.</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="px-4 py-3 font-mono text-yellow-600 font-bold">chown :sistemes arxiu</td>
+                                        <td className="px-4 py-3 text-gray-600">Canvia només el grup propietari.</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="px-4 py-3 font-mono text-custom-blue font-bold">chown pere:sistemes arxiu</td>
+                                        <td className="px-4 py-3 text-gray-600">Canvia usuari I grup alhora.</td>
+                                    </tr>
+                                    <tr className="bg-purple-50">
+                                        <td className="px-4 py-3 font-mono text-purple-600 font-bold">chown -R pere carpeta/</td>
+                                        <td className="px-4 py-3 text-gray-600">Canvia propietari <strong>Recursivament</strong>.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div className="bg-yellow-50 p-4 rounded-xl text-yellow-800 text-sm text-center border border-yellow-200 shadow-sm">
+                            <span className="font-bold block mb-2 text-yellow-900 uppercase tracking-wide">Exercici</span> 
+                            Fes que la carpeta <code>/shared</code> sigui de l'usuari <code>root</code> i del grup <code>profes</code>.
+                            <code className="mt-2 block bg-white border border-yellow-200 p-2 rounded text-gray-800 font-mono font-bold mx-auto max-w-md shadow-sm">sudo chown root:profes /shared</code>
+                        </div>
+                    </div>
+                )
+            },
+            {
+                title: "4. Xarxes: Diagnòstic",
                 icon: <Icons.Network />,
                 content: (
-                <div className="space-y-6">
-                    <div className="bg-white p-4 rounded-lg shadow-sm border border-orange-100">
-                    <h3 className="font-bold text-lg flex items-center gap-2 text-gray-800">
-                        <span className="text-orange-500">●</span> Ubuntu (Netplan)
-                    </h3>
-                    <p className="text-xs text-gray-500 mb-2 font-mono">/etc/netplan/00-installer-config.yaml</p>
-                    <pre className="bg-gray-800 text-blue-300 p-4 rounded text-xs font-mono overflow-x-auto leading-relaxed">
+                    <div className="space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {/* Ubuntu */}
+                            <div className="bg-white p-6 rounded-xl border-t-4 border-orange-500 shadow-sm">
+                                <h3 className="font-bold text-orange-600 mb-4 flex items-center gap-2 text-lg">
+                                    <span className="text-xl">🐧</span> Ubuntu (Terminal)
+                                </h3>
+                                <ul className="space-y-4 text-sm">
+                                    <li>
+                                        <span className="block text-gray-500 text-xs mb-1 uppercase font-bold">Veure IP i estat:</span>
+                                        <code className="text-gray-800 bg-gray-100 border border-gray-200 px-2 py-1 rounded block w-full text-center">ip address show</code>
+                                    </li>
+                                    <li>
+                                        <span className="block text-gray-500 text-xs mb-1 uppercase font-bold">Veure rutes (Gateway):</span>
+                                        <code className="text-gray-800 bg-gray-100 border border-gray-200 px-2 py-1 rounded block w-full text-center">ip route</code>
+                                    </li>
+                                    <li>
+                                        <span className="block text-gray-500 text-xs mb-1 uppercase font-bold">Provar connectivitat:</span>
+                                        <code className="text-gray-800 bg-gray-100 border border-gray-200 px-2 py-1 rounded block w-full text-center">ping 8.8.8.8</code>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            {/* Windows */}
+                            <div className="bg-white p-6 rounded-xl border-t-4 border-custom-blue shadow-sm">
+                                <h3 className="font-bold text-custom-blue mb-4 flex items-center gap-2 text-lg">
+                                    <span className="text-xl">🪟</span> Windows (PowerShell)
+                                </h3>
+                                <ul className="space-y-4 text-sm">
+                                    <li>
+                                        <span className="block text-gray-500 text-xs mb-1 uppercase font-bold">Configuració bàsica:</span>
+                                        <code className="text-gray-800 bg-gray-100 border border-gray-200 px-2 py-1 rounded block w-full text-center">ipconfig /all</code>
+                                    </li>
+                                    <li>
+                                        <span className="block text-gray-500 text-xs mb-1 uppercase font-bold">Llistar interfícies (PS):</span>
+                                        <code className="text-gray-800 bg-gray-100 border border-gray-200 px-2 py-1 rounded block w-full text-center">Get-NetIPInterface</code>
+                                    </li>
+                                    <li className="bg-yellow-50 p-2 rounded border border-yellow-100">
+                                        <span className="block text-yellow-800 text-xs font-bold text-center">⚠️ IMPORTANT EXAMEN</span>
+                                        <span className="text-gray-600 text-xs text-center block mt-1">Si el ping no va, revisa el Firewall (ICMP).</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                )
+            },
+            {
+                title: "Xarxes: Configuració (Netplan vs PS)",
+                icon: <Icons.Network />,
+                content: (
+                    <div className="space-y-5">
+                        <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
+                            <div className="flex justify-between items-center mb-3">
+                                <h4 className="text-orange-600 font-bold text-lg">Ubuntu: Netplan</h4>
+                                <span className="text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded font-mono">/etc/netplan/*.yaml</span>
+                            </div>
+                            <pre className="bg-gray-800 text-xs p-4 rounded-lg font-mono text-green-300 overflow-x-auto leading-relaxed shadow-inner">
 {`network:
   version: 2
   renderer: networkd
   ethernets:
-    enp0s3:
+    enp0s3:              # Nom interfície (mira'l amb ip a)
       dhcp4: no
-      addresses: [192.168.1.50/24]
-      gateway4: 192.168.1.1`}
-                    </pre>
-                    <p className="text-xs mt-2 text-gray-600 flex items-center gap-1"><Icons.Terminal className="w-3 h-3"/> Recorda: <code className="bg-gray-200 px-1 rounded">sudo netplan apply</code></p>
-                    </div>
+      addresses:
+        - 192.168.10.50/24
+      gateway4: 192.168.10.1
+      nameservers:
+        addresses: [8.8.8.8, 1.1.1.1]`}
+                            </pre>
+                            <div className="mt-3 text-sm flex items-center justify-end gap-2">
+                                <span className="text-gray-500">Aplicar canvis: </span>
+                                <code className="text-white bg-custom-blue px-3 py-1 rounded font-bold shadow-sm">sudo netplan apply</code>
+                            </div>
+                        </div>
 
-                    <div className="bg-white p-4 rounded-lg shadow-sm border border-blue-100">
-                    <h3 className="font-bold text-lg flex items-center gap-2 text-gray-800">
-                        <span className="text-blue-500">●</span> Windows (PowerShell)
-                    </h3>
-                    <div className="bg-gray-100 p-3 rounded text-xs font-mono border-l-4 border-blue-500 text-gray-700 mt-2 break-all">
-                        New-NetIPAddress -InterfaceIndex 6 -IPAddress 192.168.1.55 -PrefixLength 24 -DefaultGateway 192.168.1.1
+                        <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
+                            <h4 className="text-custom-blue font-bold text-lg mb-3">Windows: PowerShell (Admin)</h4>
+                            <div className="space-y-3">
+                                <code className="block bg-gray-50 border border-gray-200 text-gray-700 text-xs p-3 rounded font-mono break-all">
+                                    <span className="text-blue-600 font-bold">New-NetIPAddress</span> -InterfaceIndex 6 -IPAddress 192.168.10.55 -PrefixLength 24 -DefaultGateway 192.168.10.1
+                                </code>
+                                <code className="block bg-gray-50 border border-gray-200 text-gray-700 text-xs p-3 rounded font-mono break-all">
+                                    <span className="text-blue-600 font-bold">Set-DnsClientServerAddress</span> -InterfaceIndex 6 -ServerAddresses ("8.8.8.8")
+                                </code>
+                            </div>
+                            <p className="text-xs text-gray-400 mt-2 text-right"> *InterfaceIndex es treu amb <code>Get-NetIPInterface</code>.</p>
+                        </div>
                     </div>
-                    <p className="text-xs mt-2 text-gray-600">Veure interfícies: <code className="bg-gray-200 px-1 rounded">Get-NetIPInterface</code></p>
-                    </div>
-                </div>
-                )
-            },
-            {
-                id: 7,
-                title: "Consells per l'Examen",
-                icon: <Icons.AlertCircle />,
-                content: (
-                <div className="space-y-4">
-                    <div className="bg-white p-6 rounded-lg shadow border-t-4 border-green-500">
-                    <h3 className="font-bold text-lg mb-4 text-gray-800">Checklist Final</h3>
-                    <ul className="space-y-3 text-gray-700">
-                        <li className="flex items-start gap-3">
-                        <div className="mt-1 bg-green-100 text-green-600 rounded-full p-1"><svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"/></svg></div>
-                        <span>Llegeix bé si demana <strong>ruta absoluta</strong> (des de /) o <strong>relativa</strong>.</span>
-                        </li>
-                        <li className="flex items-start gap-3">
-                        <div className="mt-1 bg-green-100 text-green-600 rounded-full p-1"><svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"/></svg></div>
-                        <span>Si has de crear una estructura d'arbre, usa <code>mkdir -p</code>.</span>
-                        </li>
-                        <li className="flex items-start gap-3">
-                        <div className="mt-1 bg-green-100 text-green-600 rounded-full p-1"><svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"/></svg></div>
-                        <span>A Windows, recorda desactivar el <strong>Firewall</strong> si el ping no respon.</span>
-                        </li>
-                        <li className="flex items-start gap-3">
-                        <div className="mt-1 bg-green-100 text-green-600 rounded-full p-1"><svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"/></svg></div>
-                        <span>A les captures: el <strong>prompt</strong> ha de demostrar qui ets.</span>
-                        </li>
-                    </ul>
-                    </div>
-                    <p className="text-center font-bold text-2xl text-blue-800 mt-6 animate-pulse">Molta sort! 🍀</p>
-                </div>
                 )
             }
         ];
@@ -288,69 +462,66 @@
             };
 
             return (
-                <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
-                    <div className="w-full max-w-4xl bg-white rounded-2xl shadow-xl overflow-hidden min-h-[600px] flex flex-col">
-                        
-                        {/* Header */}
-                        <div className="bg-blue-900 text-white p-6 flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                                {slides[currentSlide].icon && <div className="p-2 bg-blue-800 rounded-lg text-white fill-current w-10 h-10 flex items-center justify-center">{slides[currentSlide].icon}</div>}
-                                <div>
-                                    <h1 className="text-2xl font-bold">{slides[currentSlide].title}</h1>
-                                    {slides[currentSlide].subtitle && <p className="text-blue-200 text-sm">{slides[currentSlide].subtitle}</p>}
-                                </div>
+                <div className="w-full max-w-5xl bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col h-[700px] border border-gray-200">
+                    
+                    {/* Header */}
+                    <div className="bg-custom-blue p-6 flex items-center justify-between text-white">
+                        <div className="flex items-center gap-4">
+                            <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
+                                {slides[currentSlide].icon ? slides[currentSlide].icon : <Icons.Terminal/>}
                             </div>
-                            <div className="text-sm font-mono bg-blue-800 px-3 py-1 rounded-full">
-                                {currentSlide + 1} / {slides.length}
+                            <div>
+                                <h1 className="text-2xl font-bold">{slides[currentSlide].title}</h1>
+                                {slides[currentSlide].subtitle && <p className="text-blue-100 text-sm">{slides[currentSlide].subtitle}</p>}
                             </div>
                         </div>
-
-                        {/* Content Body */}
-                        <div className="flex-1 p-8 text-gray-800 flex flex-col justify-center bg-slate-50">
-                            {slides[currentSlide].content}
-                        </div>
-
-                        {/* Footer / Controls */}
-                        <div className="bg-white p-4 border-t flex justify-between items-center">
-                            <button 
-                                onClick={prevSlide}
-                                disabled={currentSlide === 0}
-                                className={`flex items-center px-6 py-3 rounded-lg font-bold transition-all ${
-                                currentSlide === 0 
-                                    ? 'text-gray-300 cursor-not-allowed' 
-                                    : 'bg-white text-blue-900 hover:bg-blue-50 border border-blue-200 shadow-sm hover:shadow'
-                                }`}
-                            >
-                                <div className="mr-2"><Icons.ChevronLeft /></div> Anterior
-                            </button>
-
-                            <div className="flex gap-2">
-                                {slides.map((_, idx) => (
-                                <div 
-                                    key={idx}
-                                    onClick={() => setCurrentSlide(idx)}
-                                    className={`w-3 h-3 rounded-full cursor-pointer transition-all ${
-                                    idx === currentSlide ? 'bg-blue-600 w-8' : 'bg-gray-300 hover:bg-gray-400'
-                                    }`}
-                                />
-                                ))}
-                            </div>
-
-                            <button 
-                                onClick={nextSlide}
-                                disabled={currentSlide === slides.length - 1}
-                                className={`flex items-center px-6 py-3 rounded-lg font-bold transition-all ${
-                                currentSlide === slides.length - 1 
-                                    ? 'text-gray-300 cursor-not-allowed' 
-                                    : 'bg-blue-600 text-white hover:bg-blue-700 shadow-md hover:shadow-lg'
-                                }`}
-                            >
-                                Següent <div className="ml-2"><Icons.ChevronRight /></div>
-                            </button>
+                        <div className="text-sm font-mono bg-white/20 px-4 py-1.5 rounded-full backdrop-blur-sm border border-white/30">
+                            {currentSlide + 1} / {slides.length}
                         </div>
                     </div>
-                    <div className="mt-4 text-gray-400 text-xs text-center">
-                        Generat per a ASIX1 - Mòdul Implantació Sistemes Operatius
+
+                    {/* Content */}
+                    <div className="flex-1 p-10 overflow-y-auto bg-slate-50">
+                        {slides[currentSlide].content}
+                    </div>
+
+                    {/* Footer Controls */}
+                    <div className="bg-white p-5 border-t border-gray-200 flex justify-between items-center">
+                        <button 
+                            onClick={prevSlide}
+                            disabled={currentSlide === 0}
+                            className={`flex items-center px-6 py-2.5 rounded-lg font-bold transition-all ${
+                                currentSlide === 0 
+                                    ? 'text-gray-300 cursor-not-allowed bg-gray-50' 
+                                    : 'bg-white text-custom-blue border border-blue-200 hover:bg-blue-50 shadow-sm'
+                            }`}
+                        >
+                            <Icons.ArrowLeft /> <span className="ml-2">Anterior</span>
+                        </button>
+
+                        <div className="flex gap-2">
+                            {slides.map((_, idx) => (
+                                <button 
+                                    key={idx}
+                                    onClick={() => setCurrentSlide(idx)}
+                                    className={`w-2.5 h-2.5 rounded-full transition-all ${
+                                        idx === currentSlide ? 'bg-custom-blue w-8' : 'bg-gray-300 hover:bg-gray-400'
+                                    }`}
+                                />
+                            ))}
+                        </div>
+
+                        <button 
+                            onClick={nextSlide}
+                            disabled={currentSlide === slides.length - 1}
+                            className={`flex items-center px-6 py-2.5 rounded-lg font-bold transition-all ${
+                                currentSlide === slides.length - 1 
+                                    ? 'text-gray-300 cursor-not-allowed bg-gray-50' 
+                                    : 'bg-custom-blue text-white hover:bg-[#4a6ec2] shadow-md hover:shadow-lg'
+                            }`}
+                        >
+                            <span className="mr-2">Següent</span> <Icons.ArrowRight />
+                        </button>
                     </div>
                 </div>
             );
