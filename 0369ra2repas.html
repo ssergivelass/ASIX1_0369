@@ -123,59 +123,154 @@
                 title: "Practica de Gestió de Fitxers",
                 icon: <Icons.Terminal />,
                 content: (
-                    <div className="space-y-6">
-                        <div className="bg-white text-gray-800 p-8 rounded-xl shadow-md border border-gray-200">
-                            <h3 className="font-bold text-xl mb-6 text-purple-700">Reptes de Comandes</h3>
-                            <div className="space-y-6">
-                                <div className="border-b border-gray-100 pb-4">
-                                    <p className="font-semibold text-gray-700 mb-2">1. Crear estructura de carpetes niada (Ex: examen/ra2/xarxes)</p>
-                                    <div className="flex justify-between items-center bg-gray-50 p-3 rounded">
-                                        <span className="text-sm text-gray-500 italic">No facis `mkdir` tres vegades...</span>
-                                        <code className="bg-gray-800 text-green-300 px-3 py-1 rounded text-sm shadow-sm">mkdir -p examen/ra2/xarxes</code>
-                                    </div>
-                                </div>
-                                <div className="border-b border-gray-100 pb-4">
-                                    <p className="font-semibold text-gray-700 mb-2">2. Moure i canviar nom alhora</p>
-                                    <div className="flex justify-between items-center bg-gray-50 p-3 rounded">
-                                        <span className="text-sm text-gray-500 italic">Mou 'fitxer.txt' a 'Docs' i digues-li 'final.txt'</span>
-                                        <code className="bg-gray-800 text-yellow-300 px-3 py-1 rounded text-sm shadow-sm">mv fitxer.txt Docs/final.txt</code>
-                                    </div>
-                                </div>
-                                <div>
-                                    <p className="font-semibold text-gray-700 mb-2">3. Esborrar carpeta amb contingut</p>
-                                    <div className="flex justify-between items-center bg-gray-50 p-3 rounded">
-                                        <span className="text-sm text-gray-500 italic">Compte! `rmdir` només esborra carpetes buides.</span>
-                                        <code className="bg-gray-800 text-red-300 px-3 py-1 rounded text-sm shadow-sm">rm -r carpeta_plena</code>
-                                    </div>
-                                </div>
-                                <div className="border-b border-gray-100 pb-4">
-                                    <p className="font-semibold text-gray-700 mb-2">4. Copiar arxius i carpetes</p>
-                                    <div className="flex justify-between items-center bg-gray-50 p-3 rounded">
-                                        <span className="text-sm text-gray-500 italic">Copia 'notes.txt' a la carpeta 'backup'</span>
-                                        <code className="bg-gray-800 text-blue-300 px-3 py-1 rounded text-sm shadow-sm">cp notes.txt backup/</code>
-                                    </div>
-                                </div>
-                                <div>
-                                    <p className="font-semibold text-gray-700 mb-2">5. Mostrar contingut bàsic d’un fitxer</p>
-                                    <div className="flex justify-between items-center bg-gray-50 p-3 rounded">
-                                        <span className="text-sm text-gray-500 italic">Visualitza ràpidament què hi ha dins de 'config.txt'</span>
-                                        <code className="bg-gray-800 text-pink-300 px-3 py-1 rounded text-sm shadow-sm">cat config.txt</code>
-                                    </div>
-                                </div>
-                                <div className="border-b border-gray-100 pb-4">
-                                    <p className="font-semibold text-gray-700 mb-2">6. Editar un fitxer amb nano</p>
-                                    <div className="flex justify-between items-center bg-gray-50 p-3 rounded">
-                                        <span className="text-sm text-gray-500 italic">Obre i edita el fitxer 'informe.txt'</span>
-                                        <code className="bg-gray-800 text-purple-300 px-3 py-1 rounded text-sm shadow-sm">nano informe.txt</code>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 text-sm text-blue-800 flex items-center gap-3 shadow-sm">
-                            <div className="bg-white p-2 rounded-full shadow-sm text-custom-blue"><Icons.Terminal/></div>
-                            <span><strong>Truc d'examen:</strong> Si et demanen llistar fitxers ocults, recorda <code>-a</code>. Si vols veure permisos, <code>-l</code>. Combina'ls: <code>ls -la</code>.</span>
-                        </div>
-                    </div>
+<div className="space-y-6">
+    {/* Targeta de reptes */}
+    <div className="bg-white text-gray-800 p-8 rounded-xl shadow-md border border-gray-200">
+        <h3 className="font-bold text-xl mb-6 text-purple-700">Reptes de Comandes</h3>
+        <div className="space-y-6">
+            <div className="border-b border-gray-100 pb-4">
+                <p className="font-semibold text-gray-700 mb-2">
+                    1. Crear estructura de carpetes niada (Ex: examen/ra2/xarxes)
+                </p>
+                <div className="flex justify-between items-center bg-gray-50 p-3 rounded">
+                    <span className="text-sm text-gray-500 italic">
+                        No facis `mkdir` tres vegades...
+                    </span>
+                    <code className="bg-gray-800 text-green-300 px-3 py-1 rounded text-sm shadow-sm">
+                        mkdir -p examen/ra2/xarxes
+                    </code>
+                </div>
+            </div>
+
+            <div className="border-b border-gray-100 pb-4">
+                <p className="font-semibold text-gray-700 mb-2">2. Moure i canviar nom alhora</p>
+                <div className="flex justify-between items-center bg-gray-50 p-3 rounded">
+                    <span className="text-sm text-gray-500 italic">
+                        Mou 'fitxer.txt' a 'Docs' i digues-li 'final.txt'
+                    </span>
+                    <code className="bg-gray-800 text-yellow-300 px-3 py-1 rounded text-sm shadow-sm">
+                        mv fitxer.txt Docs/final.txt
+                    </code>
+                </div>
+            </div>
+
+            <div className="border-b border-gray-100 pb-4">
+                <p className="font-semibold text-gray-700 mb-2">3. Esborrar carpeta amb contingut</p>
+                <div className="flex justify-between items-center bg-gray-50 p-3 rounded">
+                    <span className="text-sm text-gray-500 italic">
+                        Compte! `rmdir` només esborra carpetes buides.
+                    </span>
+                    <code className="bg-gray-800 text-red-300 px-3 py-1 rounded text-sm shadow-sm">
+                        rm -r carpeta_plena
+                    </code>
+                </div>
+            </div>
+
+            <div className="border-b border-gray-100 pb-4">
+                <p className="font-semibold text-gray-700 mb-2">4. Copiar arxius i carpetes</p>
+                <div className="flex justify-between items-center bg-gray-50 p-3 rounded">
+                    <span className="text-sm text-gray-500 italic">
+                        Copia 'notes.txt' a la carpeta 'backup'
+                    </span>
+                    <code className="bg-gray-800 text-blue-300 px-3 py-1 rounded text-sm shadow-sm">
+                        cp notes.txt backup/
+                    </code>
+                </div>
+            </div>
+
+            <div className="border-b border-gray-100 pb-4">
+                <p className="font-semibold text-gray-700 mb-2">5. Mostrar contingut bàsic d’un fitxer</p>
+                <div className="flex justify-between items-center bg-gray-50 p-3 rounded">
+                    <span className="text-sm text-gray-500 italic">
+                        Visualitza ràpidament què hi ha dins de 'config.txt'
+                    </span>
+                    <code className="bg-gray-800 text-pink-300 px-3 py-1 rounded text-sm shadow-sm">
+                        cat config.txt
+                    </code>
+                </div>
+            </div>
+
+            <div className="border-b border-gray-100 pb-4">
+                <p className="font-semibold text-gray-700 mb-2">6. Editar un fitxer amb nano</p>
+                <div className="flex justify-between items-center bg-gray-50 p-3 rounded">
+                    <span className="text-sm text-gray-500 italic">
+                        Obre i edita el fitxer 'informe.txt'
+                    </span>
+                    <code className="bg-gray-800 text-purple-300 px-3 py-1 rounded text-sm shadow-sm">
+                        nano informe.txt
+                    </code>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {/* Targeta de comandes essencials */}
+    <div className="bg-white text-gray-800 p-8 rounded-xl shadow-md border border-gray-200">
+        <h3 className="font-bold text-xl mb-4 text-purple-700">
+            Comandes essencials de navegació i llistat
+        </h3>
+
+        <div className="space-y-4 text-sm text-gray-700">
+            <div>
+                <p className="font-semibold text-gray-800 mb-1">
+                    Comandes essencials per navegar per directoris:
+                </p>
+                <ul className="list-disc list-inside space-y-1">
+                    <li>
+                        <code className="bg-gray-100 px-1 rounded">pwd</code>: Mostra el directori actual.
+                    </li>
+                    <li>
+                        <code className="bg-gray-100 px-1 rounded">cd [directori]</code>: Canvia al
+                        directori especificat.
+                    </li>
+                    <li>
+                        <code className="bg-gray-100 px-1 rounded">cd ..</code>: Puja un nivell en
+                        l'estructura de directoris.
+                    </li>
+                    <li>
+                        <code className="bg-gray-100 px-1 rounded">cd ~</code>: Torna al directori
+                        personal de l'usuari.
+                    </li>
+                </ul>
+            </div>
+
+            <div>
+                <p className="font-semibold text-gray-800 mb-1">Comanda ls: Llistar el contingut d'un directori.</p>
+                <ul className="list-disc list-inside space-y-1">
+                    <li>
+                        <code className="bg-gray-100 px-1 rounded">ls [ruta]</code>: Llista els fitxers i
+                        carpetes en la ruta indicada.
+                    </li>
+                    <li>
+                        <code className="bg-gray-100 px-1 rounded">ls -R</code>: Llista també els
+                        subdirectoris.
+                    </li>
+                    <li>
+                        <code className="bg-gray-100 px-1 rounded">ls -l</code>: Mostra informació detallada
+                        sobre cada element.
+                    </li>
+                    <li>
+                        <code className="bg-gray-100 px-1 rounded">ls -a</code>: Mostra també els fitxers
+                        ocults.
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    {/* Truc d'examen */}
+    <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 text-sm text-blue-800 flex items-center gap-3 shadow-sm">
+        <div className="bg-white p-2 rounded-full shadow-sm text-custom-blue">
+            <Icons.Terminal />
+        </div>
+        <span>
+            <strong>Truc d'examen:</strong> Si et demanen llistar fitxers ocults, recorda{" "}
+            <code>-a</code>. Si vols veure permisos, <code>-l</code>. Combina'ls:{" "}
+            <code>ls -la</code>.
+        </span>
+    </div>
+</div>
+
                 )
             },
             {
@@ -213,6 +308,25 @@
                                 <code className="text-sm bg-gray-800 text-blue-300 block p-3 rounded mb-2">sudo:x:27:usuari1,usuari2</code>
                                 <p className="text-xs text-gray-500">Format: <code>NomGrup:x:GID:Membres</code>. Aquí veus qui pertany al grup.</p>
                             </div>
+                        </div>
+                    </div>
+                )
+            },
+            {
+                title: "Prompt: La línia de comandes",
+                icon: <Icons.Terminal />,
+                content: (
+                    <div className="space-y-4">
+                        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                            <h3 className="font-bold text-lg text-gray-800 mb-2">El prompt</h3>
+                            <p className="text-sm text-gray-600 mb-3">La línia que apareix quan obrim la terminal i ens permet introduir comandes. Ens proporciona informació útil sobre la sessió i l'usuari.</p>
+                            <ul className="list-disc list-inside text-sm text-gray-700 space-y-2">
+                                <li><strong>Usuari (severo):</strong> Ens diu qui està loguejat.</li>
+                                <li><strong>Nom de la màquina (severolab):</strong> Ens diu des de quina màquina o servidor estem treballant.</li>
+                                <li><strong>Directori actual (~):</strong> Ens diu on ens trobem dins del sistema de fitxers.</li>
+                                <li><strong>Símbol del prompt ($ o #):</strong> Indica si estem com a usuari normal (<code>$</code>) o com a administrador (<code>#</code>).</li>
+                            </ul>
+                            <div className="mt-4 bg-gray-800 p-3 rounded text-sm font-mono text-green-300">severo@severolab:~$</div>
                         </div>
                     </div>
                 )
